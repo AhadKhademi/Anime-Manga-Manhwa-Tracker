@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Manga Manhwa Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    
+    <header>
+        <button id="menu-btn"><i class="fa-solid fa-bars"></i></button>
+
+        <form id="input-container">
+            <input type="text" id="add-input" autocomplete="off" placeholder="Myanimelist title" required>
+            <select id="type-selector">
+                <option value="ANIME">Anime</option>
+                <option value="MANGA">Manga/Manhwa</option>
+            </select>
+            <button type="submit" id="add-btn">Add<span>+</span></button>
+        </form>
+    </header>
+
+    <div class="side-menu">
+        <div class="menu-header">
+            <h2>Sidebar</h2>
+            <span class="close-menu-btn"><i class="fa-solid fa-xmark"></i></span>
+        </div>
+
+        <h3 style="color: white; text-align: center; margin-top: 30px">Under structure</h3>
+    </div>
+
+    <main>
+        <div class="options-container">
+            <button class="sort-btn btn-active" id="all-btn">All</button>
+            <button class="sort-btn" id="anime-btn">Anime</button>
+            <button class="sort-btn" id="manga-btn">Manga</button>
+            <button class="sort-btn" id="manhwa-btn">Manhwa</button>
+            <button class="sort-btn" id="updated-btn">Updated</button>
+        </div>
+
+        <div class="content-container">
+            <!-- <div class="card">
+                <div class="card-img-wrapper">
+                    <img class="card-img" src="image/MV5BZjliODY5MzQtMmViZC00MTZmLWFhMWMtMjMwM2I3OGY1MTRiXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg">
+                </div>
+                <small class="age absolute">+13</small>
+                <small class="season-episode absolute">S1 E10</small>
+                <span class="rating-container absolute">
+                    <div class="logo-container">
+                        <img class="logo-img" src="logo/MyAnimeList_Logo.png">
+                    </div>
+                    <small class="rating">8.37</small>
+                </span>
+                <small class="airing absolute">Finished</small>
+                <span class="absolute delete"><i class="fa-solid fa-xmark"></i></span>
+
+                <div class="title-container">
+                    <span class="card-title">Attack on titan</span>
+                </div>
+            </div> -->
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

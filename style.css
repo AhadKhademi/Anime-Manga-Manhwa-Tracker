@@ -1,0 +1,320 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root{
+    --primary-color: #8B5CF6;
+    --white: #e5e5e5;
+    --text-color: #212121;
+    --red: #ff3030;
+}
+
+body{
+    font-family: 'poppins', sans-serif;
+    background-color: var(--text-color);
+    min-height: 100vh;
+    position: relative;
+}
+
+/* -- header -- */
+
+header{
+    width: 100%;
+    padding: 1rem 1.2rem;
+    background-color: var(--primary-color);
+    position: fixed;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+}
+#menu-btn{
+    height: 35px;
+    width: 35px;
+    border: none;
+    background-color: var(--text-color);
+    border-radius: 0.5rem;
+    color: var(--white);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+#menu-btn:hover{
+    background-color: var(--white);
+    color: var(--text-color);
+}
+#input-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    height: 30px;
+}
+#add-input{
+    width: 60%;
+    height: 100%;
+    border-radius: 0.6rem 0 0 0.3rem;
+    border: none;
+    outline: none;
+    padding: 0 0.8rem;
+    color: var(--text-color);
+    background-color: var(--white);
+    font-size: 14px;
+}
+#type-selector{
+    width: 20%;
+    height: 100%;
+    border: none;
+    outline: none;
+    color: var(--text-color);
+    background-color: rgb(212, 212, 212);
+    
+    cursor: pointer;
+}
+option{
+    background-color: var(--white);
+}
+#add-btn{
+    width: 20%;
+    height: 100%;
+    border-radius: 0 0.3rem 0.6rem 0;
+    border: none;
+    cursor: pointer;
+    background-color: var(--text-color);
+    color: var(--white);
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#add-btn span{
+    font-size: 18px;
+}
+
+/* side menu */
+
+.side-menu{
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--text-color);
+    transform: translateX(-101%);
+    z-index: 9999;
+    transition: all 0.5s;
+    border-right: 1px solid var(--white);
+}
+
+.side-menu.active{
+    transform: translateX(0);
+}
+.menu-header{
+    width: 100%;
+    height: 50px;
+    background-color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--white);
+    padding: 1rem 1.5rem;
+    border-radius: 0 0 0.8rem 0.8rem;
+}
+.menu-header h2{
+    letter-spacing: 1px;
+}
+
+.close-menu-btn{
+    cursor: pointer;
+    font-size: 20px;
+    transition: 0.3s;
+}
+.close-menu-btn:hover{
+    color: var(--red);
+}
+
+/* -- main -- */
+
+/* options */
+.options-container{
+    padding: 1rem 1rem 1.2rem 1rem;
+    background-color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    position: relative;
+    border-radius: 0 0 1rem 1rem;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.7);
+}
+.options-container::after{
+    content: "";
+    position: absolute;
+    width: 90%;
+    height: 3px;
+    background-color: var(--primary-color);
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.options-container button{
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    transition: color 0.3s;
+}
+.options-container button:hover{
+    color: var(--primary-color);
+}
+.btn-active{
+    text-decoration: underline 2px var(--primary-color);
+}
+
+/* content */
+
+.content-container{
+    width: 100%;
+    padding: 1.5rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.card{
+    width: 150px;
+    height: 250px;
+    position: relative;
+    border-radius: 1rem 0.5rem;
+    box-shadow: 0 3px 8px var(--primary-color);
+    transition: all 0.3s;
+}
+.card:hover{
+    animation: colorful 10s infinite linear;
+    transform: translateY(-5px);
+}
+
+.card-img-wrapper{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+}
+.card-img{
+    width: 100%;
+    height: 100%;
+}
+.absolute{
+    position: absolute;
+    background-color: var(--white);
+    color: var(--text-color);
+    padding: 1px 3px;
+    border-radius: 6px;
+}
+.age{
+    top: 6px;
+    left: 6px;
+}
+.season-episode{
+    top: 6px;
+    right: 6px;
+}
+.airing{
+    bottom: 6px;
+    right: 6px;
+    font-size: 10px;
+}
+.delete{
+    top: -12px;
+    right: -12px;
+    border-radius: 50%;
+    z-index: 20;
+    cursor: pointer;
+    color: var(--white);
+    background-color: var(--text-color);
+    transition: all 0.3s;
+}
+.delete:hover{
+    background-color: var(--white);
+    color: var(--red);
+}
+.rating-container{
+    left: 6px;
+    bottom: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    gap: 3px;
+}
+.logo-container{
+    width: 100%;
+    height: 30px;
+    border-radius: 0.3rem;
+    overflow: hidden;
+}
+.logo-img{
+    width: 100%;
+    height: 100%;
+}
+small{
+    font-weight: 500;
+}
+.title-container{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: inherit;
+    transition: all 0.3s;
+}
+.title-container .card-title{
+    color: var(--white);
+    opacity: 0;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+.title-container:hover{
+    background-color: rgba(0, 0, 0, 0.8);
+}
+.title-container:hover .card-title{
+    opacity: 1;
+}
+
+@keyframes colorful{
+    0%{
+        box-shadow: 0 3px 8px rgba(255, 66, 41, 0.5);
+    }
+    20%{
+        box-shadow: 0 3px 8px rgba(244, 255, 38, 0.5);
+    }
+    40%{
+        box-shadow: 0 3px 8px rgba(59, 255, 41, 0.5);
+    }
+    60%{
+        box-shadow: 0 3px 8px rgba(46, 255, 255, 0.5);
+    }
+    80%{
+        box-shadow: 0 3px 8px rgba(255, 46, 252, 0.5);
+    }
+    100%{
+        box-shadow: 0 3px 8px rgba(255, 66, 41, 0.5);
+    }
+}
