@@ -223,10 +223,12 @@ option{
 .age{
     top: 6px;
     left: 6px;
+    font-size: 10px;
 }
 .season-episode{
     top: 6px;
     right: 6px;
+    font-size: 10px;
 }
 .airing{
     bottom: 6px;
