@@ -62,7 +62,7 @@ function sortBtns(sortBtn, otherBtns){
     }
     else if(sortBtnId === "updated-btn"){
         myList = [];
-        message = "Under structure";
+        message = "Under construction";
     }
 
     updateUI(myList, message);
@@ -253,7 +253,7 @@ function deleteCard(e){
     LIST = LIST.filter(card => card.id != deleteThisElement.id);
     localStorage.setItem("AnimeMangaManhwa", JSON.stringify(LIST));
 
-    updateUI(LIST);
+    updateUI(LIST, "Nothing here yet");
 }
 
 function openCloseMenu(){
