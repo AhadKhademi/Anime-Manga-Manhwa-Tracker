@@ -16,9 +16,24 @@ const manhwaBtn = document.getElementById("manhwa-btn");
 const updatedBtn = document.getElementById("updated-btn");
 const allSortBtns = document.querySelectorAll(".sort-btn");
 
+//pagination elements
+const prePageBtn = document.getElementById("pre-page-btn");
+const pageNumberDisplayer = document.getElementById("page-number");
+const nextPageBtn = document.getElementById("next-page-btn");
+const paginationContainer = document.querySelector(".pagination-container");
+
 body.style.paddingTop = header.offsetHeight + "px";
 
 let LIST = JSON.parse(localStorage.getItem("AnimeMangaManhwa")) || [];
+
+let latestList = [];
+
+//pagination info
+let page = 1;
+let pageSize = 6;
+let totalPages = Math.ceil(LIST.length / pageSize);
+
+let checkSectionId = allBtn.id;
 
 allBtn.addEventListener("click", () => sortBtns(allBtn, allSortBtns));
 animeBtn.addEventListener("click", () => sortBtns(animeBtn, allSortBtns));
@@ -30,10 +45,22 @@ openMenuBtn.addEventListener("click", openCloseMenu);
 closeMenuBtn.addEventListener("click", openCloseMenu);
 form.addEventListener("submit", addNewCard);
 
+prePageBtn.addEventListener("click", () => {
+    if(page > 1) page--;
+    else return;
+
+    updateUI(latestList, "Nothing here");
+})
+
+nextPageBtn.addEventListener("click", () => {
+    if(page < totalPages) page++
+    else return;
+
+    updateUI(latestList, "Nothing here");
+})
+
 function sortBtns(sortBtn, otherBtns){
-    let sortBtnId = "";
-    let myList = LIST;
-    let message = "";
+    page = 1;
 
     otherBtns.forEach((btn) => {
         if(btn !== sortBtn){
@@ -41,31 +68,13 @@ function sortBtns(sortBtn, otherBtns){
         } 
         else{
             btn.classList.add("btn-active");
-            sortBtnId = btn.id;
+            checkSectionId = btn.id;
         } 
     })
 
-    if(sortBtnId === "all-btn"){
-        message = "Nothing here yet";
-    }
-    else if(sortBtnId === "anime-btn"){
-        myList = myList.filter(card => card.type == "Anime");
-        message = "No anime yet";
-    }
-    else if(sortBtnId === "manga-btn"){
-        myList = myList.filter(card => card.type == "Manga")
-        message = "No manga yet";
-    }
-    else if(sortBtnId === "manhwa-btn"){
-        myList = myList.filter(card => card.type == "Manhwa")
-        message = "No manhwa yet";
-    }
-    else if(sortBtnId === "updated-btn"){
-        myList = [];
-        message = "Under construction";
-    }
+    let rightList = giveTheRightList(checkSectionId)
 
-    updateUI(myList, message);
+    updateUI(rightList.list, rightList.message);
 }
 
 async function addNewCard(e){
@@ -85,7 +94,9 @@ async function addNewCard(e){
         return
     }
 
-    updateUI(LIST);
+    let rightList = giveTheRightList(checkSectionId);
+
+    updateUI(rightList.list, rightList.message);
     clearInput();
 }
 
@@ -180,7 +191,19 @@ function updateUI(list, message){
     let contentContainer = document.querySelector(".content-container");
     contentContainer.innerHTML = "";
 
-    let sortedList = [...list].reverse();
+    latestList = list
+
+    totalPages = Math.ceil(list.length / pageSize);
+
+    paginationContainer.style.display = totalPages === 0 ? "none" : "flex";
+
+    if(page > totalPages) page = totalPages || 1;
+
+    const start = (page - 1) * pageSize;
+
+    let reversed = [...list].reverse();
+
+    let sortedList = reversed.slice(start, start + pageSize);
 
     if(sortedList.length == 0){
         contentContainer.innerHTML = `
@@ -193,6 +216,10 @@ function updateUI(list, message){
             contentContainer.appendChild(newCard);
         })
     }
+
+    pageNumberDisplayer.textContent = `${page} of ${totalPages}`;
+
+    updatePaginationButtons();
 }
 
 function makeCard(card){
@@ -253,7 +280,58 @@ function deleteCard(e){
     LIST = LIST.filter(card => card.id != deleteThisElement.id);
     localStorage.setItem("AnimeMangaManhwa", JSON.stringify(LIST));
 
-    updateUI(LIST, "Nothing here yet");
+    let rightList = giveTheRightList(checkSectionId);
+
+    updateUI(rightList.list, rightList.message);
+}
+
+function giveTheRightList(sectionId){
+    let filteredList = [];
+    let message = "";
+
+    switch(sectionId){
+        case "all-btn":
+            filteredList = LIST;
+            message = "Nothing here";
+            break;
+
+        case "anime-btn":
+            filteredList = LIST.filter(card => card.type === "Anime");
+            message = "No Anime yet";
+            break;
+
+        case "manga-btn":
+            filteredList = LIST.filter(card => card.type === "Manga");
+            message = "No Manga yet";
+            break;
+
+        case "manhwa-btn":
+            filteredList = LIST.filter(card => card.type === "Manhwa");
+            message = "No Manhwa yet";
+            break;
+
+        case "updated-btn":
+            filteredList = [];
+            message = "Under construction";
+            break;
+
+        default:
+            filteredList = LIST;
+            message = "Nothing here";
+            break;
+    }
+    
+    return {
+        list : filteredList,
+        message : message
+    }
+}
+
+function updatePaginationButtons(){
+    prePageBtn.style.opacity = page === 1 ? "0.5" : "1";
+    prePageBtn.style.pointerEvents = page === 1 ? "none" : "auto";
+    nextPageBtn.style.opacity = page === totalPages ? "0.5" : "1";
+    nextPageBtn.style.pointerEvents = page === totalPages ? "none" : "auto";
 }
 
 function openCloseMenu(){
@@ -265,4 +343,4 @@ function clearInput(){
     addInput.value = "";
 }
 
-window.addEventListener("DOMContentLoaded", updateUI(LIST, "Nothing here yet"));
+window.addEventListener("DOMContentLoaded", () => updateUI(LIST, "Nothing here yet"));
