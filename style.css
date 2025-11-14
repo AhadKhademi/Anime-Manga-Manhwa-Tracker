@@ -11,6 +11,7 @@
     --white: #e5e5e5;
     --text-color: #212121;
     --red: #ff3030;
+    --yellow: gold;
 }
 
 body{
@@ -109,11 +110,10 @@ option{
     left: 0;
     background-color: var(--text-color);
     transform: translateX(-101%);
-    z-index: 9999;
+    z-index: 9000;
     transition: all 0.5s;
     border-right: 1px solid var(--white);
 }
-
 .side-menu.active{
     transform: translateX(0);
 }
@@ -131,7 +131,6 @@ option{
 .menu-header h2{
     letter-spacing: 1px;
 }
-
 .close-menu-btn{
     cursor: pointer;
     font-size: 20px;
@@ -202,7 +201,6 @@ option{
     animation: colorful 10s infinite linear;
     transform: translateY(-5px);
 }
-
 .card-img-wrapper{
     width: 100%;
     height: 100%;
@@ -342,6 +340,50 @@ small{
     border-radius: 0.3rem;
 }
 
+/* toast */
+
+.toast{
+    max-width: 90%;
+    padding: 0.8rem;
+    background-color: var(--white);
+    color: var(--text-color);
+    position: fixed;
+    bottom: 0px;
+    left: 50%;
+    transform: translate(-50%, 101%);
+    animation:  popUpToast 4s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    border-radius: 1rem;
+    z-index: 9010;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.7);
+}
+.toast .icon-holder{
+    padding: 0.2rem;
+    background-color: var(--text-color);
+    border-radius: 0.7rem;
+}
+.toast .toast-info{
+    font-size: 15px;
+    font-weight: 500;
+}
+/* exist */
+.exist-toast-border{
+    border-left: 6px solid var(--yellow);
+}
+.exist-toast-icon-color{
+    color: var(--yellow);
+}
+/* notFound */
+.not-found-toast-border{
+    border-left: 6px solid var(--red);
+}
+.not-found-toast-icon-color{
+    color: var(--red);
+}
+
 @keyframes colorful{
     0%{
         box-shadow: 0 3px 8px rgba(255, 66, 41, 0.5);
@@ -360,5 +402,20 @@ small{
     }
     100%{
         box-shadow: 0 3px 8px rgba(255, 66, 41, 0.5);
+    }
+}
+
+@keyframes popUpToast{
+    0%{
+        transform: translate(-50%, 101%);
+    }
+    10%{
+        transform: translate(-50%, -2rem);
+    }
+    90%{
+        transform: translate(-50%, -2rem);
+    }
+    100%{
+        transform: translate(-50%, 101%);
     }
 }

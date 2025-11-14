@@ -35,6 +35,8 @@ let totalPages = Math.ceil(LIST.length / pageSize);
 
 let checkSectionId = allBtn.id;
 
+let isSubmitting = false;
+
 allBtn.addEventListener("click", () => sortBtns(allBtn, allSortBtns));
 animeBtn.addEventListener("click", () => sortBtns(animeBtn, allSortBtns));
 mangaBtn.addEventListener("click", () => sortBtns(mangaBtn, allSortBtns));
@@ -59,6 +61,7 @@ nextPageBtn.addEventListener("click", () => {
     updateUI(latestList, "Nothing here");
 })
 
+// sortBtns()
 function sortBtns(sortBtn, otherBtns){
     page = 1;
 
@@ -72,13 +75,17 @@ function sortBtns(sortBtn, otherBtns){
         } 
     })
 
-    let rightList = giveTheRightList(checkSectionId)
+    let rightList = giveTheRightList(checkSectionId);
 
     updateUI(rightList.list, rightList.message);
 }
 
+// addNewCard()
 async function addNewCard(e){
     e.preventDefault();
+
+    if(isSubmitting) return;
+    isSubmitting = true;
 
     const cardTitle = addInput.value.trim();
     const cardType = typeSelector.value.trim();
@@ -86,20 +93,32 @@ async function addNewCard(e){
     let newCard = await findTheCard(cardTitle, cardType);
 
     if(newCard != null){
+        for(let card of LIST){
+            if(card.title === newCard.title && card.type === newCard.type){
+                showToast(card.title, "exist");
+                isSubmitting = false;
+                return;
+            }
+        }
+
         LIST.push(newCard);
         localStorage.setItem("AnimeMangaManhwa", JSON.stringify(LIST));
     }
     else{
-        window.alert("Couldn't find it try again");
-        return
+        showToast("Couldn't find it", "notFound");
+        isSubmitting = false;
+        return;
     }
 
     let rightList = giveTheRightList(checkSectionId);
 
     updateUI(rightList.list, rightList.message);
     clearInput();
+
+    isSubmitting = false;
 }
 
+// findTheCard
 async function findTheCard(title, type){
     let cardTitle = title;
     let cardType = type;
@@ -131,12 +150,12 @@ async function findTheCard(title, type){
                 countryOfOrigin
             }
         }
-    `
+    `;
 
     const variables = {
         search: cardTitle,
         type: cardType
-    }
+    };
 
     try{
         const response = await fetch("https://graphql.anilist.co", {
@@ -154,30 +173,29 @@ async function findTheCard(title, type){
 
         let newCard = {};
 
-
         if(cardType === "MANGA"){
             newCard = {
                 id : Date.now(),
-                title : cardInfo.title.english,
+                title : cardInfo.title.english || `USER - ${cardTitle}`,
                 type : cardInfo.countryOfOrigin === "KR" ? "Manhwa" : cardInfo.countryOfOrigin === "CN" ? "Manhua" : "Manga",
                 status : cardInfo.status,
                 score : cardInfo.averageScore ? cardInfo.averageScore / 10 : null,
                 chapters: cardInfo.chapters,
                 volumes: cardInfo.volumes,
                 img: cardInfo.coverImage.large
-            }
+            };
         }
         else{
             newCard = {
                 id : Date.now(),
-                title : cardInfo.title.english || cardInfo.title.romaji,
+                title : cardInfo.title.english || cardInfo.title.romaji || `user : ${cardTitle}`,
                 type : "Anime",
                 status : cardInfo.status,
                 score : cardInfo.averageScore ? cardInfo.averageScore / 10 : null,
                 episodes : cardInfo.episodes,
                 nextEpisode : cardInfo.nextAiringEpisode?.episode ?? null,
                 img: cardInfo.coverImage.large
-            }
+            };
         }
         
         return newCard;
@@ -187,11 +205,12 @@ async function findTheCard(title, type){
     }
 }
 
+// updateUI()
 function updateUI(list, message){
     let contentContainer = document.querySelector(".content-container");
     contentContainer.innerHTML = "";
 
-    latestList = list
+    latestList = list;
 
     totalPages = Math.ceil(list.length / pageSize);
 
@@ -208,13 +227,13 @@ function updateUI(list, message){
     if(sortedList.length == 0){
         contentContainer.innerHTML = `
             <h1 style="color: white; margin-top: 50px">${message}</h1>
-        `
+        `;
     }
     else{
         sortedList.forEach((card) => {
             let newCard = makeCard(card);
             contentContainer.appendChild(newCard);
-        })
+        });
     }
 
     pageNumberDisplayer.textContent = `${page} of ${totalPages}`;
@@ -222,6 +241,7 @@ function updateUI(list, message){
     updatePaginationButtons();
 }
 
+// makeCard()
 function makeCard(card){
     let newCard = document.createElement("div");
     newCard.classList.add("card");
@@ -246,7 +266,7 @@ function makeCard(card){
             <div class="title-container">
                 <span class="card-title">${card.title}</span>
             </div>
-        `
+        `;
     }
     else{
         newCard.innerHTML = `
@@ -267,7 +287,7 @@ function makeCard(card){
             <div class="title-container">
                 <span class="card-title">${card.title}</span>
             </div>
-        `
+        `;
     }
 
     newCard.querySelector(".delete").addEventListener("click", deleteCard);
@@ -275,6 +295,7 @@ function makeCard(card){
     return newCard;
 }
 
+// deleteCard()
 function deleteCard(e){
     let deleteThisElement = e.target.closest(".card");
     LIST = LIST.filter(card => card.id != deleteThisElement.id);
@@ -285,6 +306,7 @@ function deleteCard(e){
     updateUI(rightList.list, rightList.message);
 }
 
+// giveTheRightList()
 function giveTheRightList(sectionId){
     let filteredList = [];
     let message = "";
@@ -324,9 +346,10 @@ function giveTheRightList(sectionId){
     return {
         list : filteredList,
         message : message
-    }
+    };
 }
 
+// updatePaginationButtons()
 function updatePaginationButtons(){
     prePageBtn.style.opacity = page === 1 ? "0.5" : "1";
     prePageBtn.style.pointerEvents = page === 1 ? "none" : "auto";
@@ -334,11 +357,57 @@ function updatePaginationButtons(){
     nextPageBtn.style.pointerEvents = page === totalPages ? "none" : "auto";
 }
 
+//showToast()
+function showToast(message, type){
+    const oldToast = document.querySelector(".toast");
+    if(oldToast) oldToast.remove();
+
+    toastElement = document.createElement("div");
+    toastElement.classList.add("toast");
+
+    switch(type){
+        case "exist":
+            toastElement.classList.add("exist-toast-border");
+
+            toastElement.innerHTML = `
+                <div class="icon-holder exist-toast-icon-color">
+                    <i class="fa-solid fa-exclamation"></i>
+                </div>
+                <div class="toast-info">
+                    "${message}" card already exists
+                </div>
+            `;
+            break;
+        
+        case "notFound":
+            toastElement.classList.add("not-found-toast-border");
+
+            toastElement.innerHTML = `
+                <div class="icon-holder not-found-toast-icon-color">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
+                <div class="toast-info">
+                    ${message}
+                </div>
+            `;
+            break;
+
+        default:
+            break;
+    }
+
+    document.body.appendChild(toastElement)
+
+    toastElement.addEventListener("animationend", () => { toastElement.remove() });
+}
+
+// openCloseMenu()
 function openCloseMenu(){
     const sideMenu = document.querySelector(".side-menu");
     sideMenu.classList.toggle("active");
 }
 
+//clearInput()
 function clearInput(){
     addInput.value = "";
 }
