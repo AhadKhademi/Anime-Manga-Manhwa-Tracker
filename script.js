@@ -2,6 +2,7 @@ const body = document.body;
 const header = document.querySelector("header");
 const openMenuBtn = document.getElementById("menu-btn");
 const closeMenuBtn = document.querySelector(".close-menu-btn");
+const contentContainer = document.querySelector(".content-container");
 
 //form, input, select
 const form = document.getElementById("input-container");
@@ -46,6 +47,31 @@ updatedBtn.addEventListener("click", () => sortBtns(updatedBtn, allSortBtns));
 openMenuBtn.addEventListener("click", openCloseMenu);
 closeMenuBtn.addEventListener("click", openCloseMenu);
 form.addEventListener("submit", addNewCard);
+
+// updatePageSize()
+function updatePageSize(){
+    if(window.innerWidth >= 1200) pageSize = 18;
+    else if(window.innerWidth >= 1100) pageSize = 16;
+    else if(window.innerWidth >= 1000) pageSize = 15;
+    else if(window.innerWidth >= 700) pageSize = 12;
+    else if(window.innerWidth >= 500) pageSize = 10;
+    else pageSize = 6;
+}
+
+updatePageSize();
+
+let resizeTimeout;
+
+window.addEventListener("resize", () => {
+    clearTimeout(resizeTimeout);
+
+    resizeTimeout = setTimeout(() => {
+        updatePageSize();
+
+        let rightList = giveTheRightList(checkSectionId);
+        updateUI(rightList.list, rightList.message);
+    }, 300)
+})
 
 prePageBtn.addEventListener("click", () => {
     if(page > 1) page--;
@@ -103,6 +129,7 @@ async function addNewCard(e){
 
         LIST.push(newCard);
         localStorage.setItem("AnimeMangaManhwa", JSON.stringify(LIST));
+        showToast("Successfully added", "successfulAdd");
     }
     else{
         showToast("Couldn't find it", "notFound");
@@ -228,8 +255,14 @@ function updateUI(list, message){
         contentContainer.innerHTML = `
             <h1 style="color: white; margin-top: 50px">${message}</h1>
         `;
+
+        contentContainer.style.display = "flex";
+        contentContainer.style.justifyContent = "center";
     }
     else{
+        contentContainer.style.display = "grid";
+        contentContainer.style.gridTemplateColumns = "repeat(auto-fill, minmax(150px, 1fr))";
+
         sortedList.forEach((card) => {
             let newCard = makeCard(card);
             contentContainer.appendChild(newCard);
@@ -392,6 +425,19 @@ function showToast(message, type){
             `;
             break;
 
+        case "successfulAdd":
+            toastElement.classList.add("successful-add-toast-border");
+
+            toastElement.innerHTML = `
+                <div class="icon-holder successful-add-toast-icon-color">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <div class="toast-info">
+                    ${message}
+                </div>
+            `;
+            break;
+
         default:
             break;
     }
@@ -412,4 +458,4 @@ function clearInput(){
     addInput.value = "";
 }
 
-window.addEventListener("DOMContentLoaded", () => updateUI(LIST, "Nothing here yet"));
+window.addEventListener("DOMContentLoaded", () => {updateUI(LIST, "Nothing here yet");});
